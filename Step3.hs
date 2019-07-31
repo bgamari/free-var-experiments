@@ -39,7 +39,7 @@ instance Semigroup FV where
     runFV fv1 boundVars (runFV fv2 boundVars acc)
 instance FreeVarStrategy FV where
   unitFV v = FV $ \boundVars acc ->
-    if memberVarSet v boundVars
+    if memberVarSet v boundVars || memberVarSet v acc
     then acc
     else insertVarSet v acc
   bindVar v fv = FV $ \boundVars acc ->
@@ -68,6 +68,14 @@ instance FreeVarStrategy NoFreeVars where
 noFreeVars :: NoFreeVars -> Bool
 noFreeVars (NoFreeVars f) = f mempty
 
+exprNoFreeVars :: Expr -> Bool
+exprNoFreeVars e = noFreeVars $ exprFV e
+
+exprFreeVars :: Expr -> VarSet
+exprFreeVars e = fvToVarSet $ exprFV e
+
+exprFreeVarsNaive :: Expr -> VarSet
+exprFreeVarsNaive e = runNaive $ exprFV e
 
 {-# SPECIALISE exprFV :: Expr -> Naive #-}
 {-# SPECIALISE exprFV :: Expr -> FV #-}
