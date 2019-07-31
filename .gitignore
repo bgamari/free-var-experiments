@@ -1,0 +1,6 @@
+*.dump-*
+*.verbose-core2core
+*.o
+*.hi
+*.log
+
